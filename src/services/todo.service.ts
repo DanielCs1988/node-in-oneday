@@ -1,51 +1,36 @@
 import { injectable } from "inversify";
-import {TodoModel} from "../models/todo.model";
+import { Todo } from "../models/todo.model";
 
 @injectable()
 export class TodoService {
 
-    private todos: TodoModel[] = [
-        {
-            _id: 'abc',
-            text: 'Learn Node in 1 day',
-            completed: true
-        },
-        {
-            _id: 'def',
-            text: 'Write unit tests',
-            completed: false
-        }
-    ];
-
     public getAllTodos = () => {
-        return this.todos;
+        return Todo.find({});
     };
 
     public getTodoById = (id: string) => {
-        return this.todos.find(todo => todo._id === id);
+        return Todo.findById(id);
     };
 
-    public createTodo = (todo: TodoModel) => {
-        this.todos.push(todo);
-        return todo;
+    public createTodo = async (text: string) => {
+        const todo = new Todo({ text });
+        return todo.save();
     };
 
     public deleteTodo = (id: string) => {
-        const todo = this.getTodoById(id);
-        this.todos = this.todos
-            .filter(todo => todo._id !== id);
-        return todo;
+        return Todo.findByIdAndRemove(id);
     };
 
-    public updateTodo = (id: string, text: string) => {
-        this.todos = this.todos
-            .map(todo => todo._id === id ? { ...todo, text } : todo);
-        return this.getTodoById(id);
+    public updateTodo = async (id: string, text: string) => {
+        return Todo.findByIdAndUpdate(id, { text }, { new: true });
     };
 
-    public toggleTodo = (id: string) => {
-        this.todos = this.todos
-            .map(todo => todo._id === id ? { ...todo, completed: !todo.completed } : todo);
-        return this.getTodoById(id);
+    public toggleTodo = async (id: string) => {
+        const todo = await Todo.findById(id);
+        if (todo) {
+            todo.completed = !todo.completed;
+            return todo.save();
+        }
+        throw new Error('Todo not found!');
     };
 }

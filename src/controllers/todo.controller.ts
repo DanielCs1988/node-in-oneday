@@ -6,11 +6,10 @@ import {
     httpPut,
     interfaces,
     queryParam,
-    requestBody, requestParam
+    requestParam
 } from "inversify-express-utils";
 import {inject} from "inversify";
 import {TodoService} from "../services/todo.service";
-import {TodoModel} from "../models/todo.model";
 
 @controller('/todos')
 export class TodoController implements interfaces.Controller {
@@ -28,12 +27,12 @@ export class TodoController implements interfaces.Controller {
     }
 
     @httpPost('/')
-    private post(@requestBody() todo: TodoModel) {
-        return this.todoService.createTodo(todo);
+    private async post(@queryParam('text') text: string) {
+        return this.todoService.createTodo(text);
     }
 
     @httpPut('/:id')
-    private put(@requestParam('id') id: string, @queryParam('text') text: string) {
+    private async put(@requestParam('id') id: string, @queryParam('text') text: string) {
         if (text) {
             return this.todoService.updateTodo(id, text);
         }
@@ -41,7 +40,7 @@ export class TodoController implements interfaces.Controller {
     }
 
     @httpDelete('/:id')
-    private delete(@requestParam('id') id: string) {
+    private async delete(@requestParam('id') id: string) {
         return this.todoService.deleteTodo(id);
     }
 }
