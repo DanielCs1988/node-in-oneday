@@ -17,6 +17,8 @@
         "noImplicitThis": true
     },
     "include": [
-        "./src/**/*"
+        "./src/**/*",
+        "./spec/**/*",
+        "node_modules/@types/jasmine/index.d.ts"
     ]
 }

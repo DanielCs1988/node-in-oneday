@@ -10,7 +10,7 @@ import {SwapiService} from "../services/swapi.service";
 import {Response} from "express";
 
 @controller('/swapi')
-export class RandomController implements interfaces.Controller {
+export class SwapiController implements interfaces.Controller {
 
     constructor(@inject('SwapiService') private swapiService: SwapiService) { }
 
